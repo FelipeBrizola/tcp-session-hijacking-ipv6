@@ -2,7 +2,7 @@
 from socket import *
 
 def tcp_ipv6():
-    HOST = "2804:14d:4c93:8ec3:1cd6:4c94:ef7c:3ae1"
+    HOST = "2804:14d:4c93:175b:43b:541b:c474:466c"
     PORT = 21567
     ADDR = (HOST, PORT)
     BUFSIZ = 1024
