@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 from socket import *
+from tcp_hijack import *
 
 def tcp_ipv6():
-    HOST = "2804:14d:4c93:175b:43b:541b:c474:466c"
-    PORT = 21567
+    HOST = SERVER_ADDRESS
+    PORT = SERVER_PORT
     ADDR = (HOST, PORT)
     BUFSIZ = 1024
     

@@ -1,0 +1,4 @@
+/home/rafael/projects/redes/tcp/socket_tcp_c/CMakeFiles/rebuild_cache.dir
+/home/rafael/projects/redes/tcp/socket_tcp_c/CMakeFiles/edit_cache.dir
+/home/rafael/projects/redes/tcp/socket_tcp_c/CMakeFiles/client.dir
+/home/rafael/projects/redes/tcp/socket_tcp_c/CMakeFiles/server.dir

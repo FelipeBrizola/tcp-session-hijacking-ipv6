@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/rafael/projects/redes/tcp/socket_tcp_c/server.c
+arpa/inet.h
+-
+stdio.h
+-
+stdlib.h
+-
+sys/socket.h
+-
+sys/types.h
+-
+unistd.h
+-
+netinet/in.h
+-
+

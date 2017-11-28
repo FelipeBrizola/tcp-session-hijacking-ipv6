@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 from socket import *
 from time import ctime
+from tcp_hijack import *
 
 HOST=''
-PORT = 21567
+PORT = SERVER_PORT
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
 
@@ -20,7 +21,7 @@ while True:
         data = tcpCliSock.recv(BUFSIZ)
         if not data:
             break
-        print data
+        print (data)
         tcpCliSock.send(data)
     tcpCliSock.close()
 tcpSerSock.close()

@@ -1,0 +1,1 @@
+/usr/bin/cc  -D_REETRANT -Wall -Wextra -pedantic -Wno-long-long -ggdb -O0 -g   CMakeFiles/server.dir/server.c.o  -o server -rdynamic 
